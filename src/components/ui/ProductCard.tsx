@@ -1,22 +1,24 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Product } from "@/types";
 import Badge from "./Badge";
 
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group">
-      <div className="bg-gray-50 h-48 flex items-center justify-center relative">
+      <div className="relative h-48 bg-gray-50">
         {product.badge && (
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 z-10">
             <Badge>{product.badge}</Badge>
           </div>
         )}
-        {/* Placeholder image — replace with real product images */}
-        <div className="w-24 h-24 rounded-full bg-brand-100 flex items-center justify-center">
-          <svg className="w-12 h-12 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.5 12a7.5 7.5 0 1015 0 7.5 7.5 0 00-15 0zm7.5-3.75v3.75m0 0v.01M12 15.75h.01" />
-          </svg>
-        </div>
+        <Image
+          src={product.image || `https://placehold.co/600x400/a8d5a2/2d3748?text=${encodeURIComponent(product.name)}`}
+          alt={product.name}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
       </div>
       <div className="p-5">
         <span className="text-xs font-semibold text-brand-500 uppercase tracking-wider">{product.category}</span>

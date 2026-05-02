@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Product } from "@/types";
@@ -54,13 +55,16 @@ export default async function ProductDetailPage({ params }: Props) {
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Image placeholder */}
-            <div className="bg-gray-50 rounded-2xl h-80 flex items-center justify-center border border-gray-100">
-              <div className="w-32 h-32 rounded-full bg-brand-100 flex items-center justify-center">
-                <svg className="w-16 h-16 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.5 12a7.5 7.5 0 1015 0 7.5 7.5 0 00-15 0zm7.5-3.75v3.75m0 0v.01M12 15.75h.01" />
-                </svg>
-              </div>
+            {/* Product image */}
+            <div className="relative h-80 rounded-2xl overflow-hidden border border-gray-100 bg-gray-50">
+              <Image
+                src={p.image || `https://placehold.co/800x600/a8d5a2/2d3748?text=${encodeURIComponent(p.name)}`}
+                alt={p.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+              />
             </div>
 
             {/* Info */}

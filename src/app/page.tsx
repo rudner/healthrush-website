@@ -1,7 +1,7 @@
 import Link from "next/link";
 import ProductCard from "@/components/ui/ProductCard";
-import { products } from "@/data/products";
-import { testimonials } from "@/data/testimonials";
+import { supabase } from "@/lib/supabase";
+import { Product, Testimonial } from "@/types";
 
 const stats = [
   { label: "Hospitals Served", value: "500+" },
@@ -45,8 +45,17 @@ const audienceCards = [
   },
 ];
 
-export default function HomePage() {
-  const featuredProducts = products.slice(0, 3);
+export default async function HomePage() {
+  const { data: productsData } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: true })
+    .limit(3);
+
+  const { data: testimonialsData } = await supabase.from("testimonials").select("*");
+
+  const featuredProducts = (productsData ?? []) as Product[];
+  const reviews = (testimonialsData ?? []) as Testimonial[];
 
   return (
     <>
@@ -186,7 +195,7 @@ export default function HomePage() {
             <p className="mt-3 text-gray-500">Trusted by hospitals and healthcare providers across the region.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
+            {reviews.map((t: Testimonial, i: number) => (
               <div key={i} className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, s) => (

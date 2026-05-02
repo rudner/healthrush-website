@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ProductCard from "@/components/ui/ProductCard";
-import { products, categories } from "@/data/products";
+import { supabase } from "@/lib/supabase";
+import { Product } from "@/types";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -9,22 +10,21 @@ export const metadata: Metadata = {
     "Browse HealthRush Enterprises' full catalog of certified hospital medical equipment — diagnostic, ICU, surgical, and rehabilitation.",
 };
 
-export default function ProductsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string }>;
-}) {
-  return <ProductsClient searchParams={searchParams} />;
-}
+const categories = ["All", "Diagnostic", "ICU", "Surgical", "Rehabilitation"];
 
-async function ProductsClient({
+export default async function ProductsPage({
   searchParams,
 }: {
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category } = await searchParams;
   const activeCategory = category || "All";
-  const filtered = activeCategory === "All" ? products : products.filter((p) => p.category === activeCategory);
+
+  const query = supabase.from("products").select("*").order("created_at", { ascending: true });
+  if (activeCategory !== "All") query.eq("category", activeCategory);
+
+  const { data: products } = await query;
+  const filtered = (products as Product[]) ?? [];
 
   return (
     <>
